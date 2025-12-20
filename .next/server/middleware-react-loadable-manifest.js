@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components\\\\shop\\\\product-detail-client.tsx -> @/lib/supabase/client\":{\"id\":\"components\\\\shop\\\\product-detail-client.tsx -> @/lib/supabase/client\",\"files\":[]}}"
