@@ -12,7 +12,6 @@ import { Edit2, Lock, Plus, Save, Upload, X, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 type Category = Database['public']['Tables']['categories']['Row']
-type CategoryInsert = Database['public']['Tables']['categories']['Insert']
 
 import { MOCK_CATEGORIES } from "@/lib/mock-data"
 
@@ -92,13 +91,11 @@ export default function AdminCategories() {
     const handleCreate = async () => {
         if (!newName || !newSlug) return
 
-        const insertData: CategoryInsert = { 
+        const { error } = await supabase.from('categories').insert({ 
             name: newName, 
             slug: newSlug,
             image_url: newImageUrl || null
-        }
-
-        const { error } = await supabase.from('categories').insert(insertData)
+        })
 
         if (error) {
             toast.error(error.message)
