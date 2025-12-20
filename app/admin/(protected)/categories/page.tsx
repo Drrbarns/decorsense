@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { Database } from "@/lib/supabase/types"
+import type { Database } from "@/lib/supabase/database.types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +12,8 @@ import { Edit2, Lock, Plus, Save, Upload, X, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 type Category = Database['public']['Tables']['categories']['Row']
+type CategoryInsert = Database['public']['Tables']['categories']['Insert']
+type CategoryUpdate = Database['public']['Tables']['categories']['Update']
 
 import { MOCK_CATEGORIES } from "@/lib/mock-data"
 
@@ -28,10 +30,9 @@ export default function AdminCategories() {
     const [newSlug, setNewSlug] = useState("")
     const [newImageUrl, setNewImageUrl] = useState("")
 
-    const supabase = createClient()
-
     const fetchCats = async () => {
         setLoading(true)
+        const supabase = createClient()
         try {
             const { data, error } = await supabase.from('categories').select('*').order('sort_order')
             if (error || !data) throw new Error("API Error")
@@ -59,6 +60,7 @@ export default function AdminCategories() {
         setUploadingImage(uploadId)
 
         try {
+            const supabase = createClient()
             const fileExt = file.name.split('.').pop()
             const fileName = `category-${categoryId || 'new'}-${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
             const filePath = `category-images/${fileName}`
@@ -91,11 +93,14 @@ export default function AdminCategories() {
     const handleCreate = async () => {
         if (!newName || !newSlug) return
 
-        const { error } = await supabase.from('categories').insert({ 
-            name: newName, 
+        const supabase = createClient()
+        const newCategory: CategoryInsert = {
+            name: newName,
             slug: newSlug,
             image_url: newImageUrl || null
-        })
+        }
+
+        const { error } = await (supabase.from('categories') as any).insert(newCategory)
 
         if (error) {
             toast.error(error.message)
@@ -112,18 +117,21 @@ export default function AdminCategories() {
     const handleUpdate = async () => {
         if (!editing) return
 
-        const { error } = await supabase
-            .from('categories')
-            .update({
-                name: editing.name,
-                slug: editing.slug,
-                sort_order: editing.sort_order,
-                image_url: editing.image_url,
-                description: editing.description,
-                is_featured: editing.is_featured,
-                is_active: editing.is_active,
-                updated_at: new Date().toISOString()
-            })
+        const supabase = createClient()
+        const updateData: CategoryUpdate = {
+            name: editing.name,
+            slug: editing.slug,
+            sort_order: editing.sort_order,
+            image_url: editing.image_url,
+            description: editing.description,
+            is_featured: editing.is_featured,
+            is_active: editing.is_active,
+            updated_at: new Date().toISOString()
+        }
+
+        const { error } = await (supabase
+            .from('categories') as any)
+            .update(updateData)
             .eq('id', editing.id)
 
         if (error) {

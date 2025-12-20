@@ -47,7 +47,7 @@ export function ProductForm({ initialData, initialTiers = [] }: ProductFormProps
     const [tiers, setTiers] = useState<Partial<Tier>[]>(initialTiers)
 
     useEffect(() => {
-        supabase.from('categories').select('*').order('name').then(res => {
+        supabase.from('categories').select('*').order('name').then((res: any) => {
             if (res.data) setCategories(res.data)
         })
     }, [])
@@ -85,10 +85,10 @@ export function ProductForm({ initialData, initialTiers = [] }: ProductFormProps
         let productId = initialData?.id
 
         if (productId) {
-            const { error } = await supabase.from('products').update(productData).eq('id', productId)
+            const { error } = await (supabase.from('products') as any).update(productData).eq('id', productId)
             if (error) { toast.error(error.message); setLoading(false); return; }
         } else {
-            const { data, error } = await supabase.from('products').insert(productData).select().single()
+            const { data, error } = await (supabase.from('products') as any).insert(productData).select().single()
             if (error) { toast.error(error.message); setLoading(false); return; }
             productId = data.id
         }
@@ -110,16 +110,16 @@ export function ProductForm({ initialData, initialTiers = [] }: ProductFormProps
 
             if (initialData) {
                 // easy way: delete all where product_id
-                await supabase.from('product_tiers').delete().eq('product_id', productId)
+                await (supabase.from('product_tiers') as any).delete().eq('product_id', productId)
             }
 
             if (validTiers.length > 0) {
-                const { error: tierError } = await supabase.from('product_tiers').insert(validTiers)
+                const { error: tierError } = await (supabase.from('product_tiers') as any).insert(validTiers)
                 if (tierError) toast.error("Product saved but tiers failed: " + tierError.message)
             }
         } else if (productId && tiers.length === 0 && initialData) {
             // Remove all tiers if empty
-            await supabase.from('product_tiers').delete().eq('product_id', productId)
+            await (supabase.from('product_tiers') as any).delete().eq('product_id', productId)
         }
 
         toast.success("Product saved successfully")

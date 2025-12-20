@@ -20,7 +20,7 @@ export default function AdminSettings() {
     const supabase = createClient()
 
     useEffect(() => {
-        supabase.from('site_settings').select('*').single().then(res => {
+        supabase.from('site_settings').select('*').single().then((res: any) => {
             if (res.data) setSettings(res.data)
             setLoading(false)
         })
@@ -31,7 +31,7 @@ export default function AdminSettings() {
         // If no row exists, we might need to insert, but seed creates one.
         // Assuming ID exists.
         if (settings.id) {
-            const { error } = await supabase.from('site_settings').update({
+            const { error } = await (supabase.from('site_settings') as any).update({
                 business_name: settings.business_name,
                 phone: settings.phone,
                 whatsapp_link: settings.whatsapp_link,

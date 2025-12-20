@@ -38,10 +38,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const fetchData = async () => {
         try {
             const [catRes, prodRes, imgRes, setRes] = await Promise.all([
-                supabase.from('categories').select('*').order('sort_order'),
-                supabase.from('products').select('*').order('created_at', { ascending: false }),
-                supabase.from('product_images').select('*').order('sort_order'),
-                supabase.from('site_settings').select('*').single(),
+                (supabase.from('categories') as any).select('*').order('sort_order'),
+                (supabase.from('products') as any).select('*').order('created_at', { ascending: false }),
+                (supabase.from('product_images') as any).select('*').order('sort_order'),
+                (supabase.from('site_settings') as any).select('*').single(),
             ])
 
             if (catRes.error || prodRes.error || setRes.error) {
@@ -53,11 +53,11 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
             
             // Attach images to products
             if (prodRes.data && imgRes.data) {
-                const productsWithImages = prodRes.data.map(product => ({
+                const productsWithImages = prodRes.data.map((product: any) => ({
                     ...product,
                     images: imgRes.data
-                        ?.filter(img => img.product_id === product.id)
-                        .map(img => img.url) || []
+                        ?.filter((img: any) => img.product_id === product.id)
+                        .map((img: any) => img.url) || []
                 }))
                 setProducts(productsWithImages as any)
             } else if (prodRes.data) {
@@ -85,35 +85,35 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0002-000000000001', name: 'Mixed Flowers', slug: 'mixed-flowers',
                     category_id: '2', price: 450, pricing_type: 'FIXED',
                     short_desc: 'Beautiful mixed flower arrangements with various stems.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 450, price_max: 4000, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0002-000000000002', name: 'Roses', slug: 'roses',
                     category_id: '2', price: 300, pricing_type: 'FIXED',
                     short_desc: 'Premium fresh roses arranged with filler flowers and greeneries.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 300, price_max: 4850, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0002-000000000003', name: 'Rose Arrangements (Box/Vase/Baskets)', slug: 'rose-arrangements',
                     category_id: '2', price: 1000, pricing_type: 'FIXED',
                     short_desc: 'Roses arranged with filler flowers and greeneries in boxes, vases, or baskets.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 1000, price_max: 2500, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0002-000000000004', name: 'Mixed Flower Arrangements', slug: 'mixed-flower-arrangements',
                     category_id: '2', price: 750, pricing_type: 'FIXED',
                     short_desc: 'Mixed flowers arranged with spray roses, chrysanthemums, gypso, ruscus, lisiathus, lilies etc.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 750, price_max: 2000, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0002-000000000005', name: 'Bridal Arrangements', slug: 'bridal-arrangements',
                     category_id: '2', price: 550, pricing_type: 'FIXED',
                     short_desc: 'Elegant bridal flower arrangements for your special day.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 550, price_max: 1000, currency: 'GHS', tags: [],
                 },
                 // FAUX & ARTIFICIAL FLOWERS (category_id: '3')
@@ -121,21 +121,21 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0003-000000000001', name: 'Faux / Velvet Flowers', slug: 'faux-velvet-flowers',
                     category_id: '3', price: 350, pricing_type: 'FIXED',
                     short_desc: 'Looks and feel like natural flowers.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 350, price_max: 2500, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0003-000000000002', name: 'Artificial Bouquets (Satin Rose)', slug: 'artificial-satin-bouquets',
                     category_id: '3', price: 250, pricing_type: 'FIXED',
                     short_desc: 'Satin rose flowers arranged beautifully.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 250, price_max: 2200, currency: 'GHS', tags: [],
                 },
                 {
                     id: 'b0000000-0000-0000-0003-000000000003', name: 'Mixed Artificial Flowers', slug: 'mixed-artificial-flowers',
                     category_id: '3', price: 350, pricing_type: 'FIXED',
                     short_desc: 'Beautiful mixed artificial flower arrangements.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 350, price_max: 1200, currency: 'GHS', tags: [],
                 },
                 // GIFT BOXES FOR HER (category_id: '4')
@@ -143,7 +143,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0004-000000000001', name: 'Birthday Gift Box Packages For Her', slug: 'gift-box-her',
                     category_id: '4', price: 450, pricing_type: 'FIXED',
                     short_desc: 'Curated gift boxes designed especially for her special day.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 450, price_max: 2000, currency: 'GHS', tags: [],
                 },
                 // GIFT BOXES FOR HIM (category_id: '5')
@@ -151,7 +151,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0005-000000000001', name: 'Birthday Gift Box Packages For Him', slug: 'gift-box-him',
                     category_id: '5', price: 500, pricing_type: 'FIXED',
                     short_desc: 'Sophisticated gift boxes designed especially for him.', long_desc: '',
-                    is_active: true, is_featured: false, created_at: '', updated_at: '',
+                    is_active: true, is_featured: false, is_trending: false, created_at: '', updated_at: '',
                     price_min: 500, price_max: 2500, currency: 'GHS', tags: [],
                 },
                 // HOT AIR BALLOON TREAT BOXES (category_id: '6')
@@ -159,7 +159,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0006-000000000001', name: 'Hot Air Balloon Treat Bouquet Packages', slug: 'balloon-treat-bouquet',
                     category_id: '6', price: 300, pricing_type: 'FIXED',
                     short_desc: 'Trendy hot air balloon style treat boxes with personalized balloons and treats.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 300, price_max: 750, currency: 'GHS', tags: [],
                 },
                 // ROOM DECORATION (category_id: '7')
@@ -167,7 +167,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0007-000000000001', name: 'Room Decoration Packages', slug: 'room-decoration',
                     category_id: '7', price: 1000, pricing_type: 'FIXED',
                     short_desc: 'Transform any space with our premium room decoration packages.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 1000, price_max: 5500, currency: 'GHS', tags: [],
                 },
                 // SURPRISE PACKAGES (category_id: '8')
@@ -175,7 +175,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
                     id: 'b0000000-0000-0000-0008-000000000001', name: 'Surprise Packages', slug: 'surprise-packages',
                     category_id: '8', price: 1000, pricing_type: 'FIXED',
                     short_desc: 'The ultimate surprise delivery experience with saxophone, party poppers, and more.', long_desc: '',
-                    is_active: true, is_featured: true, created_at: '', updated_at: '',
+                    is_active: true, is_featured: true, is_trending: false, created_at: '', updated_at: '',
                     price_min: 1000, price_max: 3000, currency: 'GHS', tags: [],
                 },
             ])

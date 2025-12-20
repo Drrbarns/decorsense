@@ -37,7 +37,7 @@ export default function AdminProductsPage() {
             if (error || !data) throw new Error("API Error")
             setProducts(data as Product[])
         } catch (e) {
-            setProducts(MOCK_PRODUCTS as Product[])
+            setProducts(MOCK_PRODUCTS as any)
         }
         setLoading(false)
     }
@@ -52,7 +52,7 @@ export default function AdminProductsPage() {
         setProducts(products.map(p => p.id === id ? { ...p, is_active: !current } : p))
         toast.success(`Product ${!current ? 'activated' : 'deactivated'}`)
         // Silently fail API in mock mode
-        await supabase.from('products').update({ is_active: !current }).eq('id', id)
+        await (supabase.from('products') as any).update({ is_active: !current }).eq('id', id)
     }
 
     // Frontend filter

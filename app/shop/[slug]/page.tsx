@@ -12,11 +12,11 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const supabase = createClient()
-    const { data: product } = await supabase
-        .from('products')
+    const { data: product } = await (supabase
+        .from('products') as any)
         .select('name, short_desc')
         .eq('slug', params.slug)
-        .single()
+        .single() as any
 
     if (!product) return { title: 'Product Not Found' }
 
@@ -41,8 +41,8 @@ export default async function ProductPage({ params }: Props) {
 
     try {
         // Fetch product principal data
-        const { data, error } = await supabase
-            .from('products')
+        const { data, error } = await (supabase
+            .from('products') as any)
             .select('*')
             .eq('slug', params.slug)
             .single()
@@ -52,11 +52,11 @@ export default async function ProductPage({ params }: Props) {
 
         // Parallel fetch for related data
         const [tiersRes, addonsRes, pricesRes, imagesRes, settingsRes] = await Promise.all([
-            supabase.from('product_tiers').select('*').eq('product_id', product.id).order('sort_order'),
-            supabase.from('addons').select('*').eq('is_active', true),
-            supabase.from('product_price_rows').select('*').eq('product_id', product.id),
-            supabase.from('product_images').select('*').eq('product_id', product.id).order('sort_order'),
-            supabase.from('site_settings').select('whatsapp_link, phone').single()
+            (supabase.from('product_tiers') as any).select('*').eq('product_id', product.id).order('sort_order'),
+            (supabase.from('addons') as any).select('*').eq('is_active', true),
+            (supabase.from('product_price_rows') as any).select('*').eq('product_id', product.id),
+            (supabase.from('product_images') as any).select('*').eq('product_id', product.id).order('sort_order'),
+            (supabase.from('site_settings') as any).select('whatsapp_link, phone').single()
         ])
 
         tiresData = tiersRes.data || []

@@ -30,3 +30,5 @@ All essential files are in place:
 3. Test admin dashboard functionality
 4. Upload product images via admin panel
 
+
+

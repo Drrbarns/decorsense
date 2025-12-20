@@ -33,8 +33,8 @@ export function ProductImageManager({ productId }: ProductImageManagerProps) {
         if (!productId) return
         
         setLoading(true)
-        const { data, error } = await supabase
-            .from('product_images')
+        const { data, error } = await (supabase
+            .from('product_images') as any)
             .select('*')
             .eq('product_id', productId)
             .order('sort_order')
@@ -100,8 +100,8 @@ export function ProductImageManager({ productId }: ProductImageManagerProps) {
                     ? Math.max(...images.map(img => img.sort_order)) + 1 
                     : 0
 
-                const { error: insertError } = await supabase
-                    .from('product_images')
+                const { error: insertError } = await (supabase
+                    .from('product_images') as any)
                     .insert({
                         product_id: productId,
                         url: urlData.publicUrl,
@@ -137,8 +137,8 @@ export function ProductImageManager({ productId }: ProductImageManagerProps) {
             const filePath = urlParts.length > 1 ? `product-images/${urlParts[1]}` : null
 
             // Delete from database
-            const { error: dbError } = await supabase
-                .from('product_images')
+            const { error: dbError } = await (supabase
+                .from('product_images') as any)
                 .delete()
                 .eq('id', imageId)
 
@@ -157,8 +157,8 @@ export function ProductImageManager({ productId }: ProductImageManagerProps) {
     }
 
     const handleSortOrderChange = async (imageId: string, newSortOrder: number) => {
-        const { error } = await supabase
-            .from('product_images')
+        const { error } = await (supabase
+            .from('product_images') as any)
             .update({ sort_order: newSortOrder })
             .eq('id', imageId)
 
@@ -267,4 +267,6 @@ export function ProductImageManager({ productId }: ProductImageManagerProps) {
         </div>
     )
 }
+
+
 

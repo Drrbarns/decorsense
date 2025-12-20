@@ -48,3 +48,5 @@ USING (bucket_id = 'product-images');
 -- TO public
 -- USING (bucket_id = 'gallery');
 
+
+

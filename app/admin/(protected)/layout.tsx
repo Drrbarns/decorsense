@@ -35,7 +35,7 @@ export default async function AdminLayout({
     const { data: adminRecord } = await supabase
         .from('admins')
         .select('email')
-        .eq('email', user.email)
+        .eq('email', user.email!)
         .single()
 
     if (!adminRecord) {

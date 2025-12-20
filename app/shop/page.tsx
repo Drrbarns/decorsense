@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, Suspense } from "react"
 import { MainNav } from "@/components/layout/main-nav"
 import { Footer } from "@/components/layout/footer"
 import { useData } from "@/components/providers/data-provider"
@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Search, SlidersHorizontal } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
-export default function ShopPage() {
+function ShopPageContent() {
     const { products, categories, loading } = useData()
     const searchParams = useSearchParams()
     const initialCategory = searchParams.get('category')
@@ -27,8 +27,8 @@ export default function ShopPage() {
             if (selectedCategory === 'gift-boxes') {
                 const giftBoxHer = categories.find(c => c.slug === 'gift-boxes-her')
                 const giftBoxHim = categories.find(c => c.slug === 'gift-boxes-him')
-                const giftBoxIds = [giftBoxHer?.id, giftBoxHim?.id].filter(Boolean)
-                result = result.filter(p => giftBoxIds.includes(p.category_id))
+                const giftBoxIds = [giftBoxHer?.id, giftBoxHim?.id].filter(Boolean) as string[]
+                result = result.filter(p => p.category_id && giftBoxIds.includes(p.category_id))
             } else {
                 // Find category ID from slug
                 const cat = categories.find(c => c.slug === selectedCategory)
@@ -123,5 +123,13 @@ export default function ShopPage() {
             </main>
             <Footer />
         </>
+    )
+}
+
+export default function ShopPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ShopPageContent />
+        </Suspense>
     )
 }

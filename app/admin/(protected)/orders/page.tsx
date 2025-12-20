@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 
 type Order = Database['public']['Tables']['order_requests']['Row']
+type OrderStatus = Database['public']['Tables']['order_requests']['Row']['status']
 
 const ORDER_STATUSES = ['NEW', 'CONTACTED', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'] as const
 
@@ -34,7 +35,7 @@ export default function AdminOrders() {
             if (error || !data) throw new Error("API Error")
             setOrders(data)
         } catch (e) {
-            setOrders(MOCK_ORDERS as Order[])
+            setOrders(MOCK_ORDERS as any)
         }
         setLoading(false)
     }
@@ -52,10 +53,10 @@ export default function AdminOrders() {
         })
     }, [orders, search, statusFilter])
 
-    const updateOrderStatus = async (orderId: string, newStatus: string) => {
-        const { error } = await supabase
-            .from('order_requests')
-            .update({ status: newStatus as any, updated_at: new Date().toISOString() })
+    const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+        const { error } = await (supabase
+            .from('order_requests') as any)
+            .update({ status: newStatus, updated_at: new Date().toISOString() })
             .eq('id', orderId)
 
         if (error) {
@@ -224,7 +225,7 @@ export default function AdminOrders() {
                                             <td className="px-3 md:px-4 py-3 md:py-4">
                                                 <Select 
                                                     value={order.status} 
-                                                    onValueChange={(value) => updateOrderStatus(order.id, value)}
+                                                    onValueChange={(value) => updateOrderStatus(order.id, value as OrderStatus)}
                                                 >
                                                     <SelectTrigger className="w-[120px] md:w-[140px] h-8 text-xs">
                                                         {getStatusBadge(order.status)}

@@ -122,3 +122,5 @@ Once connected:
 - Keep your service role key secret
 - Regularly rotate your API keys in Supabase dashboard
 
+
+

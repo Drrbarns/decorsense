@@ -33,11 +33,11 @@ export default function GalleryPage() {
                 // Mock Data Fallback
                 console.log("Using Mock Gallery Data")
                 const MOCK_GALLERY: GalleryItem[] = [
-                    { id: '1', media_type: 'image', url: '/gallery-hamper.png', caption: 'Luxury Christmas Hamper', is_active: true, sort_order: 1, created_at: '', updated_at: '' },
-                    { id: '2', media_type: 'image', url: '/gallery-balloons.png', caption: 'Luxury Balloon Decor', is_active: true, sort_order: 2, created_at: '', updated_at: '' },
-                    { id: '3', media_type: 'image', url: '/hero-bg-2.png', caption: 'Gold & Red Money Bouquet', is_active: true, sort_order: 3, created_at: '', updated_at: '' },
-                    { id: '4', media_type: 'image', url: '/product-room-decor.png', caption: 'Romantic Proposal Setup', is_active: true, sort_order: 4, created_at: '', updated_at: '' },
-                    { id: '5', media_type: 'image', url: '/hero-bg.png', caption: 'Premium Roses Box', is_active: true, sort_order: 5, created_at: '', updated_at: '' },
+                    { id: '1', media_type: 'image', url: '/gallery-hamper.png', caption: 'Luxury Christmas Hamper', is_active: true, sort_order: 1, title: null },
+                    { id: '2', media_type: 'image', url: '/gallery-balloons.png', caption: 'Luxury Balloon Decor', is_active: true, sort_order: 2, title: null },
+                    { id: '3', media_type: 'image', url: '/hero-bg-2.png', caption: 'Gold & Red Money Bouquet', is_active: true, sort_order: 3, title: null },
+                    { id: '4', media_type: 'image', url: '/product-room-decor.png', caption: 'Romantic Proposal Setup', is_active: true, sort_order: 4, title: null },
+                    { id: '5', media_type: 'image', url: '/hero-bg.png', caption: 'Premium Roses Box', is_active: true, sort_order: 5, title: null },
                 ]
                 setItems(MOCK_GALLERY)
             } finally {
