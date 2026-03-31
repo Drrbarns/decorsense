@@ -78,10 +78,10 @@ export function Hero() {
                         className="h-16 rounded-full px-10 text-lg font-semibold border-2 border-white/40 text-white hover:bg-white/20 hover:text-white bg-white/5 backdrop-blur-xl hover:border-white/60 transition-all duration-300 group" 
                         asChild
                     >
-                        <a href="https://wa.me/233245131057" target="_blank" className="flex items-center gap-2">
-                            Order via WhatsApp
+                        <Link href="/contact" className="flex items-center gap-2">
+                            Contact us
                             <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                        </a>
+                        </Link>
                     </Button>
                 </div>
             </div>

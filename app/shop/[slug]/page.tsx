@@ -34,7 +34,6 @@ export default async function ProductPage({ params }: Props) {
     let addonsData: any[] = []
     let pricesData: any[] = []
     let imagesData: any[] = []
-    let settingsData: any = { whatsapp_link: "", phone: "" }
     
     // Initialize tiers array
     tiresData = []
@@ -51,20 +50,17 @@ export default async function ProductPage({ params }: Props) {
         product = data
 
         // Parallel fetch for related data
-        const [tiersRes, addonsRes, pricesRes, imagesRes, settingsRes] = await Promise.all([
+        const [tiersRes, addonsRes, pricesRes, imagesRes] = await Promise.all([
             (supabase.from('product_tiers') as any).select('*').eq('product_id', product.id).order('sort_order'),
             (supabase.from('addons') as any).select('*').eq('is_active', true),
             (supabase.from('product_price_rows') as any).select('*').eq('product_id', product.id),
             (supabase.from('product_images') as any).select('*').eq('product_id', product.id).order('sort_order'),
-            (supabase.from('site_settings') as any).select('whatsapp_link, phone').single()
         ])
 
         tiresData = tiersRes.data || []
         addonsData = addonsRes.data || []
         pricesData = pricesRes.data || []
         imagesData = imagesRes.data || []
-        settingsData = settingsRes.data || { whatsapp_link: "", phone: "" }
-
     } catch (e) {
         // MOCK FALLBACK - Products matching the seed structure
         const MOCK_PRODUCTS: any[] = [
@@ -212,8 +208,6 @@ export default async function ProductPage({ params }: Props) {
                 { id: 'a4', name: 'Wine', price: 150, description: 'Bottle of fine wine.', is_active: true, created_at: '' },
             ]
 
-            // Mock settings
-            settingsData = { whatsapp_link: "https://wa.me/233245131057", phone: "0245131057" }
         }
     }
 
@@ -228,7 +222,6 @@ export default async function ProductPage({ params }: Props) {
             addons={addonsData}
             priceRows={pricesData}
             images={imagesData}
-            settings={settingsData}
         />
     )
 }

@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Plus, Search, Edit2, Trash2, Eye, EyeOff, TrendingUp } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -47,12 +46,37 @@ export default function AdminProductsPage() {
     }, [])
 
     const toggleActive = async (id: string, current: boolean) => {
-        // ... (API call)
-        // Optimistic update or mock update
-        setProducts(products.map(p => p.id === id ? { ...p, is_active: !current } : p))
-        toast.success(`Product ${!current ? 'activated' : 'deactivated'}`)
-        // Silently fail API in mock mode
-        await (supabase.from('products') as any).update({ is_active: !current }).eq('id', id)
+        const nextValue = !current
+        setProducts(products.map(p => p.id === id ? { ...p, is_active: nextValue } : p))
+
+        const { error } = await (supabase.from('products') as any)
+            .update({ is_active: nextValue })
+            .eq('id', id)
+
+        if (error) {
+            setProducts(products.map(p => p.id === id ? { ...p, is_active: current } : p))
+            toast.error(`Failed to update status: ${error.message}`)
+            return
+        }
+
+        toast.success(`Product ${nextValue ? 'activated' : 'deactivated'}`)
+    }
+
+    const toggleFlag = async (id: string, field: 'is_featured' | 'is_trending', current: boolean) => {
+        const nextValue = !current
+        setProducts(products.map(p => p.id === id ? { ...p, [field]: nextValue } : p))
+
+        const { error } = await (supabase.from('products') as any)
+            .update({ [field]: nextValue })
+            .eq('id', id)
+
+        if (error) {
+            setProducts(products.map(p => p.id === id ? { ...p, [field]: current } : p))
+            toast.error(`Failed to update ${field === 'is_featured' ? 'featured' : 'trending'}: ${error.message}`)
+            return
+        }
+
+        toast.success(`${field === 'is_featured' ? 'Featured' : 'Trending'} ${nextValue ? 'enabled' : 'disabled'}`)
     }
 
     // Frontend filter
@@ -103,16 +127,46 @@ export default function AdminProductsPage() {
                                             <td className="px-3 md:px-6 py-3 md:py-4 font-medium">
                                                 <div className="flex items-center gap-2">
                                                     <span>{product.name}</span>
-                                                    {(product as any).is_trending && (
-                                                        <Badge variant="default" className="bg-primary text-primary-foreground text-xs px-2 py-0.5 flex items-center gap-1">
+                                                    {product.is_trending && (
+                                                        <Badge
+                                                            variant="default"
+                                                            className="bg-primary text-primary-foreground text-xs px-2 py-0.5 flex items-center gap-1 cursor-pointer"
+                                                            onClick={() => toggleFlag(product.id, 'is_trending', product.is_trending)}
+                                                            title="Toggle trending"
+                                                        >
                                                             <TrendingUp className="h-3 w-3" />
                                                             <span className="hidden sm:inline">Trending</span>
                                                         </Badge>
                                                     )}
                                                     {product.is_featured && (
-                                                        <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                                                        <Badge
+                                                            variant="secondary"
+                                                            className="text-xs px-2 py-0.5 cursor-pointer"
+                                                            onClick={() => toggleFlag(product.id, 'is_featured', product.is_featured)}
+                                                            title="Toggle featured"
+                                                        >
                                                             Featured
                                                         </Badge>
+                                                    )}
+                                                    {!product.is_featured && !product.is_trending && (
+                                                        <div className="flex items-center gap-2">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-6 text-xs"
+                                                                onClick={() => toggleFlag(product.id, 'is_featured', product.is_featured)}
+                                                            >
+                                                                Mark Featured
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-6 text-xs"
+                                                                onClick={() => toggleFlag(product.id, 'is_trending', product.is_trending)}
+                                                            >
+                                                                Mark Trending
+                                                            </Button>
+                                                        </div>
                                                     )}
                                                 </div>
                                                 <div className="text-xs text-muted-foreground sm:hidden mt-1">{product.categories?.name || "Uncategorized"}</div>

@@ -206,10 +206,10 @@ export default function Home() {
                                     className="h-16 rounded-full px-10 text-primary text-lg font-bold shadow-2xl hover:scale-105 hover:shadow-3xl transition-all duration-300 bg-white hover:bg-white/95 group" 
                                     asChild
                                 >
-                                    <a href="https://wa.me/233245131057" target="_blank" className="flex items-center gap-2">
+                                    <Link href="/shop" className="flex items-center gap-2">
                                         <Gift className="h-5 w-5 group-hover:rotate-12 transition-transform" />
-                                        Chat with us now
-                                    </a>
+                                        Shop & pay online
+                                    </Link>
                                 </Button>
                                 <Button 
                                     size="lg" 
@@ -217,8 +217,8 @@ export default function Home() {
                                     className="h-16 rounded-full px-10 text-lg font-semibold border-2 border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-white/10 backdrop-blur-sm transition-all duration-300 group" 
                                     asChild
                                 >
-                                    <Link href="/shop" className="flex items-center gap-2">
-                                        Browse Packages
+                                    <Link href="/contact" className="flex items-center gap-2">
+                                        Contact us
                                         <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                     </Link>
                                 </Button>

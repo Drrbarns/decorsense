@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/client"
 import { Database } from "@/lib/supabase/types"
-import { Package, Tag, ShoppingCart, Image as ImageIcon, TrendingUp, Plus, ArrowRight, Clock, CheckCircle2, XCircle, AlertCircle, Eye } from "lucide-react"
+import { Package, Tag, ShoppingCart, Image as ImageIcon, TrendingUp, Plus, ArrowRight, Clock, CheckCircle2, XCircle, AlertCircle, Eye, Star } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -14,7 +14,16 @@ import { Skeleton } from "@/components/ui/skeleton"
 type Order = Database['public']['Tables']['order_requests']['Row']
 
 export default function AdminDashboard() {
-    const [counts, setCounts] = useState({ products: 0, categories: 0, orders: 0, gallery: 0, activeProducts: 0, newOrders: 0 })
+    const [counts, setCounts] = useState({
+        products: 0,
+        categories: 0,
+        orders: 0,
+        gallery: 0,
+        activeProducts: 0,
+        featuredProducts: 0,
+        trendingProducts: 0,
+        newOrders: 0
+    })
     const [recentOrders, setRecentOrders] = useState<Order[]>([])
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
@@ -23,12 +32,14 @@ export default function AdminDashboard() {
         async function loadStats() {
             setLoading(true)
             try {
-                const [p, c, o, g, activeP, newO] = await Promise.all([
+                const [p, c, o, g, activeP, featuredP, trendingP, newO] = await Promise.all([
                     supabase.from('products').select('*', { count: 'exact', head: true }),
                     supabase.from('categories').select('*', { count: 'exact', head: true }),
                     supabase.from('order_requests').select('*', { count: 'exact', head: true }),
                     supabase.from('gallery_items').select('*', { count: 'exact', head: true }),
                     supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true),
+                    supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_featured', true),
+                    supabase.from('products').select('*', { count: 'exact', head: true }).eq('is_trending', true),
                     supabase.from('order_requests').select('*', { count: 'exact', head: true }).eq('status', 'NEW')
                 ])
 
@@ -47,6 +58,8 @@ export default function AdminDashboard() {
                     orders: o.count || 0,
                     gallery: g.count || 0,
                     activeProducts: activeP.count || 0,
+                    featuredProducts: featuredP.count || 0,
+                    trendingProducts: trendingP.count || 0,
                     newOrders: newO.count || 0
                 })
 
@@ -61,6 +74,8 @@ export default function AdminDashboard() {
                     orders: 2,
                     gallery: 5,
                     activeProducts: 3,
+                    featuredProducts: 2,
+                    trendingProducts: 1,
                     newOrders: 1
                 })
             } finally {
@@ -134,12 +149,19 @@ export default function AdminDashboard() {
                         subtitle={`${counts.activeProducts} active`}
                         gradient="from-blue-500 to-blue-600"
                     />
+                    <StatCard
+                        title="Featured Products"
+                        value={counts.featuredProducts}
+                        icon={Star}
+                        subtitle={`${counts.trendingProducts} trending`}
+                        gradient="from-amber-500 to-orange-600"
+                    />
                     <StatCard 
                         title="Categories" 
                         value={counts.categories} 
                         icon={Tag}
                         subtitle="All categories"
-                        gradient="from-purple-500 to-purple-600"
+                        gradient="from-purple-500 to-violet-600"
                     />
                     <StatCard 
                         title="Total Orders" 
