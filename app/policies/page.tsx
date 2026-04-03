@@ -31,7 +31,7 @@ export default function PoliciesPage() {
                 // Mock fallback
                 setPolicy({
                     id: '1',
-                    content: '# Business Policies\n\n**Payment Terms**\n- 70% deposit is required before work begins.\n- The remaining 30% is due during pickup or before delivery.'
+                    content: '# Business Policies\n\n**Payment**\n- Orders are paid securely at checkout (Paystack).\n- For questions about your order or refunds, contact us via the details on our contact page.'
                 })
             } finally {
                 setLoading(false)
